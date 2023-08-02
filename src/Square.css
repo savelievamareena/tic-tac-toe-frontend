@@ -1,0 +1,13 @@
+.grey {
+    background-color: rgba(198, 198, 202, 0.76);
+}
+
+.pink {
+    background-color: pink;
+}
+
+.square {
+    border: 1px solid black;
+    min-width: 100px;
+    min-height: 100px;
+}
