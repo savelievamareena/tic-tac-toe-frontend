@@ -49,7 +49,7 @@ function App() {
     }
 
     function handleMove(cellIndex, e) {
-        let skip = (gameStat.status !== 0) || checkIsFilled(cellIndex) || (id !== gameStat.activeUser);
+        let skip = (gameStat.status !== 0) || checkIsFilled(cellIndex) || (uid !== gameStat.activeUser);
         if(skip) { return; }
 
         setGameStat(ps => ({...ps, showSpinner: false}))
@@ -111,16 +111,15 @@ function App() {
                     activeUser: result.activeUser
                 }
             })
-            setGameStat(ps => ({...ps, showSpinner: false}))
         }).catch(function() {
             console.log("Not allowed to move")
+        }).finally(function() {
+            setGameStat(ps => ({...ps, showSpinner: false}))
         })
     }, [])
 
     React.useEffect(checkWin, [gameStat.store])
 
-    console.log(uid)
-    console.log(gameStat.activeUser)
     return (
         <div className="App">
             <div className="title-field">

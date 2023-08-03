@@ -1,5 +1,5 @@
 export default {
-    url: "https://a24e2d6cb46d.ngrok.app/",
+    url: "https://b1f6ed60061f.ngrok.app/",
 
     handleMove: function(uid, cellIndex) {
         return new Promise((resolve, reject) => {
