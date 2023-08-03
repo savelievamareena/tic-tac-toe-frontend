@@ -14,6 +14,22 @@ function App() {
         store: Array(9).fill(0),
         showSpinner: true
     })
+    console.log(gameStat.store)
+
+    setInterval(function() {
+        api.checkOtherUser().then(function(result) {
+            if(result.status === 1) {
+                setGameStat(pr => (
+                    {
+                        ...pr,
+                        store: [...result.store]
+                    }
+                ))
+            }
+        }).catch(function() {
+            console.log("error checking other user")
+        })
+    }, 500)
 
     function handleResetGame() {
         setGameStat({
@@ -55,7 +71,9 @@ function App() {
         setGameStat(ps => ({...ps, showSpinner: false}))
         api.handleMove(uid, cellIndex).then(function (result) {
             setGameStat(prevState => {
-                prevState.store[cellIndex] = prevState.activeUser;
+                if(result.activeUser !== prevState.activeUser) {
+                    prevState.store[cellIndex] = prevState.activeUser;
+                }
                 return {
                     ...prevState,
                     activeUser: result.activeUser,
