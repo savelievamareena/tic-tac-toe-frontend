@@ -1,5 +1,5 @@
 export default {
-    url: "https://b1f6ed60061f.ngrok.app",
+    url: " https://be3ec052db76.ngrok.app",
 
     handleMove: function(uid, cellIndex) {
         return new Promise((resolve, reject) => {
@@ -35,9 +35,10 @@ export default {
                 )
         });
     },
-    checkOtherUser: function () {
+    checkOtherUser: function (uid) {
         return new Promise((resolve, reject) => {
-            fetch(`${this.url}/getStat`)
+            let url = `${this.url}/getStat?uid=${uid}`;
+            fetch(url)
                 .then(function (response) {
                     return response.json()
                 })
