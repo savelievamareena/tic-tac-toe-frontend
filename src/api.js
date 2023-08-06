@@ -1,56 +1,23 @@
 export default {
-    url: " https://be3ec052db76.ngrok.app",
+
+    url: "https://be3ec052db76.ngrok.app",
 
     handleMove: function(uid, cellIndex) {
-        return new Promise((resolve, reject) => {
-            fetch(`${this.url}/handlemove?uid=${uid}&cellIndex=${cellIndex}`)
-                .then(function (response) {
-                    return response.json()
-                })
-                .then(
-                    (result) => {
-                        resolve(result)
-                    },
-                    (error) => {
-                        console.log(error)
-                        reject();
-                    }
-                )
-        });
+        return fetch(`${this.url}/handle-move?uid=${uid}&cellIndex=${cellIndex}`);
     },
     init: function(uid) {
-        return new Promise((resolve, reject) => {
-            fetch(`${this.url}/init?uid=${uid}`)
-                .then(function (response) {
-                    return response.json()
-                })
-                .then(
-                    (result) => {
-                        resolve(result)
-                    },
-                    (error) => {
-                        console.log(error)
-                        reject();
-                    }
-                )
-        });
+        return fetch(`${this.url}/init?uid=${uid}`)
+            .then(function (response) {
+                return response.json()
+            })
     },
     checkOtherUser: function (uid) {
-        return new Promise((resolve, reject) => {
-            let url = `${this.url}/getStat?uid=${uid}`;
-            fetch(url)
-                .then(function (response) {
-                    return response.json()
-                })
-                .then(
-                    (result) => {
-                        resolve(result)
-                    },
-                    (error) => {
-                        console.log(error)
-                        reject();
-                    }
-                )
-        });
+        return fetch(`${this.url}/get-stat?uid=${uid}`)
+            .then(function (response) {
+                return response.json()
+            })
+    },
+    refreshGame: function(uid) {
+        return fetch(`${this.url}/refresh-game?uid=${uid}`);
     }
 }
