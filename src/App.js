@@ -1,9 +1,11 @@
 import React from "react";
 import './App.css';
-import Square from "./Square";
+import SquareComponent from "./SquareComponent";
 import api from "./api";
 import calculateActiveUser from "./utils/calculateActiveUser.js";
 import checkWin from "./utils/checkWin.js";
+import TitleComponent from "./TitleComponent";
+import MoveNotificationComponent from "./MoveNotificationComponent";
 
 function App() {
     const combinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
@@ -13,20 +15,18 @@ function App() {
     const ajaxIsRunning= React.useRef(true);
     const firstPlayerId= React.useRef(1);
 
-    const [gameStat, setGameStat] = React.useState({
-        status: 0,
-        showBlockingUiSpinner: true
-    })
+    const [gameStatus, setGameStatus] = React.useState(0);
+    const [showBlockingUiSpinner, setShowBlockingUiSpinner] = React.useState(true);
     const [isLoading, setIsLoading] = React.useState(true);
     const [store, setStore] = React.useState([]);
     const [activeUser, setActiveUser] = React.useState(1);
 
     function handleRefreshGame() {
-        setGameStat(ps => ({...ps, showBlockingUiSpinner: true}));
+        setShowBlockingUiSpinner(true);
         api.refreshGame(uid).catch(function() {
             console.log("reset game failed")
         }).finally(function() {
-            setGameStat(ps => ({...ps, showBlockingUiSpinner: false}));
+            setShowBlockingUiSpinner(false);
         })
     }
 
@@ -35,14 +35,14 @@ function App() {
     }
 
     function handleMove(cellIndex, e) {
-        let skip = (gameStat.status !== 0) || checkIsFilled(cellIndex) || (uid !== activeUser);
+        let skip = (gameStatus !== 0) || checkIsFilled(cellIndex) || (uid !== activeUser);
         if(skip) { return; }
 
-        setGameStat(ps => ({...ps, showBlockingUiSpinner: true}))
+        setShowBlockingUiSpinner(true);
         api.handleMove(uid, cellIndex).catch(function () {
             console.log("Move forbidden from backend");
         }).finally(function() {
-            setGameStat(ps => ({...ps, showBlockingUiSpinner: false}))
+            setShowBlockingUiSpinner(false);
         })
     }
 
@@ -53,7 +53,7 @@ function App() {
                 Array.from({length: 3}, (v, j) => {
                     squareIndex++;
 
-                    return <Square
+                    return <SquareComponent
                         state={store[squareIndex]}
                         key={j}
                         handleMove={handleMove}
@@ -76,7 +76,7 @@ function App() {
             console.log("Not allowed to move");
         }).finally(function() {
             ajaxIsRunning.current = false;
-            setGameStat(ps => ({...ps, showBlockingUiSpinner: false}))
+            setShowBlockingUiSpinner(false);
         })
     }, [])
 
@@ -102,39 +102,34 @@ function App() {
         }
     }, [])
 
+    //set active user and check win
     React.useEffect(function() {
         if(store.length < 1) {
             return
         }
         let activeUser = calculateActiveUser(store, firstPlayerId.current);
         setActiveUser(activeUser);
-        checkWin(combinations, store, setGameStat);
+        checkWin(combinations, store, setGameStatus);
     }, [store])
 
     return (
         <div className="App">
-            <div className="title-field">
-                <h1 id="title">{(gameStat.status === 1 && "USER 1 WIN!!!")
-                    || (gameStat.status === 2 && "USER 2 WIN!!!")
-                    || (gameStat.status === 0 && "Let's go")
-                    || (gameStat.status === 3 && "DRAW")
-                }</h1>
-            </div>
+            <TitleComponent status={gameStatus} />
 
             <div className="game-field">
                 {createSquaresWithArrayFrom()}
             </div>
 
             <div>
-                {gameStat.status !== 0 &&
+                {gameStatus !== 0 &&
                     <button type="button" className="button" onClick={handleRefreshGame}>Start game</button>
                 }
             </div>
-            <div className="dialogue">
-                {activeUser === uid && gameStat.status === 0 ? <span>Your Move</span> : <span>Move Forbidden</span>}
-            </div>
-            {gameStat.showBlockingUiSpinner && <div className="loading">Loading&#8230;</div>}
-            <div>{isLoading && "Refreshing..."}</div>
+
+            <MoveNotificationComponent isUserActive={activeUser === uid} isGameInProgress={gameStatus === 0} />
+
+            {showBlockingUiSpinner && <div className="loading">Loading&#8230;</div>}
+            <div style={{minHeight: 50}}>{isLoading && "Refreshing..."}</div>
         </div>
     );
 }

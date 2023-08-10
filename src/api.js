@@ -1,6 +1,6 @@
 export default {
 
-    url: "https://be3ec052db76.ngrok.app",
+    url: "https://3e168fbfac27.ngrok.app",
 
     handleMove: function(uid, cellIndex) {
         return fetch(`${this.url}/handle-move?uid=${uid}&cellIndex=${cellIndex}`);

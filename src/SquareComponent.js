@@ -1,7 +1,7 @@
 import React from "react";
 import "./Square.css";
 
-export default function Square(props){
+export default function SquareComponent(props){
     let active = (props.state === 1 && "grey") || (props.state === 2 && "pink")
     let classArr = ['square']
     if(active !== false) {

@@ -1,4 +1,4 @@
-export default function checkWin(combinations, store, setGameStat) {
+export default function checkWin(combinations, store, setGameStatus) {
     let winnerId = undefined;
 
     for(let i= 0; i < combinations.length; i++) {
@@ -20,5 +20,5 @@ export default function checkWin(combinations, store, setGameStat) {
         winnerStatus = 3;
     }
 
-    setGameStat(ps => ({...ps, status: winnerStatus}))
+    setGameStatus(winnerStatus);
 }
