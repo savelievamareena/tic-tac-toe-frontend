@@ -1,8 +1,10 @@
-export default function checkWin(combinations, store, setGameStatus) {
+import winningCombinations from "../data/winningCombinations";
+
+export default function checkWin(store, setGameStatus) {
     let winnerId = undefined;
 
-    for(let i= 0; i < combinations.length; i++) {
-        let combination = combinations[i];
+    for(let i= 0; i < winningCombinations.length; i++) {
+        let combination = winningCombinations[i];
         if(store[combination[0]] !== 0
             && store[combination[0]] === store[combination[1]]
             && store[combination[1]] === store[combination[2]]
